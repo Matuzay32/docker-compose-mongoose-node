@@ -1,4 +1,8 @@
 const mongoose = require("mongoose");
-mongoose
-  .connect("mongodb://mongo/mymongodatabase")
-  .then((db) => console.log("DB connection established", db.connection.host));
+
+main().catch((err) => console.log(err));
+
+async function main() {
+  const db = await mongoose.connect("mongodb://mongo/mymongodatabase");
+  await console.log(db.connection.host.toUpperCase(), "DB CONECTED");
+}
