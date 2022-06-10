@@ -50,5 +50,3 @@ usersRoutes.post("/users/login", async (req, res) => {
     res.status(401).json({ error: "User does not exist" });
   }
 });
-
-db.inventory.find({ $or: [{ price: { $gt: 600 } }, { price: { $eq: 2 } }] });
