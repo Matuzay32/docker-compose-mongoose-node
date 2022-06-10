@@ -8,6 +8,7 @@ import methodOverride from "method-override";
 //Routes
 import usersRoutes from "./routes/users.routes.js";
 import indexRoutes from "./routes/index.routes.js";
+import productsRoutes from "./routes/products.routes.js";
 
 //DB
 import main from "./database.js";
@@ -35,6 +36,10 @@ app.engine(
 //Aplication routes
 app.use(usersRoutes);
 app.use(indexRoutes);
+app.use(productsRoutes);
+
+//app public folder
+app.use(express.static(`${__dirname}/public`));
 
 //Conection server
 const server = async () => {

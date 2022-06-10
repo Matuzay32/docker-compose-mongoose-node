@@ -3,5 +3,9 @@ const indexRoutes = Router();
 
 export default indexRoutes;
 indexRoutes.get("/", (req, res) => {
-  res.json({ usuario: "index routes desde routes" });
+  res.send({ index: "index routes desde routes" });
+});
+
+indexRoutes.get("/about", (req, res) => {
+  res.send({ about: "Ruta de about" });
 });
