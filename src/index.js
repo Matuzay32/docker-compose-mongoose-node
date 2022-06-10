@@ -4,6 +4,7 @@ import express from "express";
 import session from "express-session";
 import { engine } from "express-handlebars";
 import methodOverride from "method-override";
+import bodyParser from "body-parser";
 
 //Routes
 import usersRoutes from "./routes/users.routes.js";
@@ -18,6 +19,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
+//Config bodyParser
+app.use(bodyParser.json());
 //Config settings
 app.set("port", process.env.PORT || 3000);
 app.set("views", `${__dirname}/views`);
