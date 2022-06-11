@@ -9,6 +9,8 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
   const resAll = await productModel.find({}).limit(limit);
   const allNamesFind = await productModel.find({}, { name: 1 }).limit(limit);
   if (names) {
+    res.status(200);
+    res.send(allNamesFind);
   } else {
     res.status(200);
     res.send(resAll);
@@ -22,12 +24,11 @@ productsRoutes.post("/products/upload", async (req, res) => {
   res.status(200).send(productCreated);
 });
 //Find One Product
-productsRoutes.get(`/products/:param`, async (req, res) => {
+productsRoutes.get(`/products/id/:param`, async (req, res) => {
   const params = req.params;
   const { param: productId } = params;
   try {
     const findProduct = await productModel.findById({ _id: productId });
-    console.log(findProduct);
     if (findProduct) {
       res.status(200).send({ productFind: findProduct });
     } else if (!findProduct) {
@@ -43,7 +44,7 @@ productsRoutes.get(`/products/:param`, async (req, res) => {
 });
 
 //Delete One product
-productsRoutes.delete(`/products/:param`, async (req, res) => {
+productsRoutes.delete(`/products/id/:param`, async (req, res) => {
   const params = req.params;
   const { param: productId } = params;
 
@@ -51,7 +52,6 @@ productsRoutes.delete(`/products/:param`, async (req, res) => {
     const findProductAndDelete = await productModel.findByIdAndDelete({
       _id: productId,
     });
-    console.log(findProductAndDelete);
     if (findProductAndDelete) {
       res.status(200).send({ productDeleted: findProductAndDelete });
     } else if (!findProductAndDelete) {
