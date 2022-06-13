@@ -1,12 +1,47 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import { userModel } from "../models/Users.js";
 import bcrypt from "bcryptjs";
+import TOKEN_SECRET from "../config/config.js";
+import { verifyToken } from "./middelwares/validateToken.js";
+
 const usersRoutes = Router();
 
 export default usersRoutes;
 
+//Login user
+usersRoutes.post("/users/login", async (req, res) => {
+  const body = req.body;
+  const { email, password } = body;
+  const foundUser = await userModel.findOne({ email: email });
+
+  if (foundUser) {
+    const validPassword = await bcrypt.compare(password, foundUser.password);
+    if (validPassword) {
+      //Genero el Token con los datos del usuario que vienen desde la base de datos
+      const token = jwt.sign(
+        {
+          username: foundUser.username,
+          email: foundUser.email,
+          _id: foundUser._id,
+          role: foundUser.role,
+        },
+        TOKEN_SECRET.TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+      res
+        .status(200)
+        .json({ message: "You are now authenticated", token: token });
+    } else {
+      res.status(400).json({ error: "Invalid Password" });
+    }
+  } else {
+    res.status(401).json({ error: "User does not exist" });
+  }
+});
+
 //Get all users ADMIN
-usersRoutes.get(`/users/allUsers`, async (req, res) => {
+usersRoutes.get(`/users/allUsers`, verifyToken, async (req, res) => {
   const { limit, skip, names, emails } = req.query;
 
   let allUsers = await userModel
@@ -37,7 +72,7 @@ usersRoutes.get(`/users/allUsers`, async (req, res) => {
 });
 
 //Get One User for email ADMIN
-usersRoutes.get(`/users/oneUser`, async (req, res) => {
+usersRoutes.get(`/users/oneUser`, verifyToken, async (req, res) => {
   const { email } = req.query;
   console.log(req.params);
   const oneUser = await userModel.findOne({ email: email });
@@ -51,7 +86,7 @@ usersRoutes.get(`/users/oneUser`, async (req, res) => {
 });
 
 //Get One User for Id ADMIN
-usersRoutes.get(`/users/id/:param`, async (req, res) => {
+usersRoutes.get(`/users/id/:param`, verifyToken, async (req, res) => {
   const params = req.params;
   const { param: userId } = params;
   try {
@@ -68,7 +103,7 @@ usersRoutes.get(`/users/id/:param`, async (req, res) => {
 });
 
 //Delete User ADMIN
-usersRoutes.delete(`/users/id/:param`, async (req, res) => {
+usersRoutes.delete(`/users/id/:param`, verifyToken, async (req, res) => {
   const params = req.params;
   const { param: userId } = params;
 
@@ -112,23 +147,5 @@ usersRoutes.post(`/users/create`, async (req, res) => {
     res.status(400).send({
       emailError: `Validation error  email is incorrect: ${email}`,
     });
-  }
-});
-
-//Login user
-usersRoutes.post("/users/login", async (req, res) => {
-  const body = req.body;
-  const { email, password } = body;
-  const foundUser = await userModel.findOne({ email: email });
-
-  if (foundUser) {
-    const validPassword = await bcrypt.compare(password, foundUser.password);
-    if (validPassword) {
-      res.status(200).json({ message: "You are now authenticated" });
-    } else {
-      res.status(400).json({ error: "Invalid Password" });
-    }
-  } else {
-    res.status(401).json({ error: "User does not exist" });
   }
 });

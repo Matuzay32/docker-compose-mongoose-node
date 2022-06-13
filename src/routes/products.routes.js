@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { productModel } from "../models/Product.js";
 const productsRoutes = Router();
+import { verifyToken } from "./middelwares/validateToken.js";
 
 export default productsRoutes;
 //Find all products in the  database
@@ -18,7 +19,7 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
 });
 
 //Upload multiple   products
-productsRoutes.post("/products/upload", async (req, res) => {
+productsRoutes.post("/products/upload", verifyToken, async (req, res) => {
   var product = req.body;
   const productCreated = await productModel.create(product);
   res.status(200).send(productCreated);

@@ -10,6 +10,15 @@ const productSchema = new Schema({
     match: /.+\@.+\..+/,
   },
   password: String,
+  role: {
+    type: [
+      {
+        type: String,
+        // Another properties
+      },
+    ],
+    default: ["USER"],
+  },
 });
 
 export const userModel = mongoose.model("User", productSchema);
