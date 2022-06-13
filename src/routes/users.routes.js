@@ -144,8 +144,7 @@ usersRoutes.post(`/users/create`, async (req, res) => {
       res.status(200).send({ user, mail, id });
     }
   } catch (error) {
-    res.status(400).send({
-      emailError: `Validation error  email is incorrect: ${email}`,
-    });
+    const miError = error;
+    res.status(400).send({ error: miError.message });
   }
 });
