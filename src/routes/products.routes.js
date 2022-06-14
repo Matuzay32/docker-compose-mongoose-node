@@ -68,7 +68,7 @@ productsRoutes.delete(`/products/id/:param`, async (req, res) => {
 });
 
 //Update One product
-productsRoutes.put(`/products/:param`, async (req, res) => {
+productsRoutes.put(`/products/id/:param`, async (req, res) => {
   const params = req.params;
   const { name, description, price } = req.body;
   const { param: productId } = params;
