@@ -1,6 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
+import cors from "cors";
 import session from "express-session";
 import { engine } from "express-handlebars";
 import methodOverride from "method-override";
@@ -18,6 +19,7 @@ import main from "./database.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
+app.use(cors());
 
 //Config bodyParser
 app.use(bodyParser.json());
