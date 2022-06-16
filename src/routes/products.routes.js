@@ -79,24 +79,25 @@ productsRoutes.put(`/products/id/:param`, async (req, res) => {
   const params = req.params;
   const { name, description, price } = req.body;
   const { param: productId } = params;
+  var updateOneProduct = await productModel.updateOne(
+    { _id: productId },
+    { name, description, price }
+  );
 
   try {
     if (name && description && price) {
-      const updateOneProduct = await productModel.updateOne(
-        { _id: productId },
-        { name, description, price }
-      );
-      if (updateOneProduct) {
-        res.status(200);
-        res.send({ productUpdated: { name, description, price } });
-      } else if (!updateOneProduct) {
-        res.status(200);
-        res.send({ notFound: `Not found product with id : ${productId}` });
-      }
     } else {
-      res
-        .status(400)
-        .res.send("You must enter the price, description and name");
+      res.status(400).send({
+        error: "este error se dio por que no ingreso todos los valores",
+      });
+    }
+
+    if (updateOneProduct) {
+      res.status(200);
+      res.send({ productUpdated: { name, description, price } });
+    } else if (!updateOneProduct) {
+      res.status(400);
+      res.send({ notFound: `Not found product with id : ${productId}` });
     }
   } catch (error) {
     res.status(400);
