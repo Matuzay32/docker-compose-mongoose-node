@@ -9,6 +9,7 @@ export const verifyToken = (req, res, next) => {
     });
   try {
     const verified = jwt.verify(token, TOKEN_SECRET.TOKEN_SECRET);
+
     const admin = verified.role.includes("ADMIN");
     if (admin) {
       next();
@@ -22,5 +23,6 @@ export const verifyToken = (req, res, next) => {
       "\x1b[31m%s\x1b[0m",
       `********* FALTA EL TOKEN EN LA CABECERA ***************`
     );
+    res.status(401).json({ error: "incorrect token credentials" });
   }
 };
