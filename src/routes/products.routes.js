@@ -19,7 +19,7 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
 });
 
 //Upload multiple   products
-productsRoutes.post("/products/upload", verifyToken, async (req, res) => {
+productsRoutes.post("/products/upload", async (req, res) => {
   var product = req.body;
   const productCreated = await productModel.create(product);
   res.status(200).send(productCreated);
