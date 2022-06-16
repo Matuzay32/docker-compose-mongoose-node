@@ -85,13 +85,6 @@ productsRoutes.put(`/products/id/:param`, async (req, res) => {
   );
 
   try {
-    if (name && description && price) {
-    } else {
-      res.status(400).send({
-        error: "este error se dio por que no ingreso todos los valores",
-      });
-    }
-
     if (updateOneProduct) {
       res.status(200);
       res.send({ productUpdated: { name, description, price } });
