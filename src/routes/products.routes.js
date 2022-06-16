@@ -21,8 +21,15 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
 //Upload multiple   products
 productsRoutes.post("/products/upload", async (req, res) => {
   var product = req.body;
-  const productCreated = await productModel.create(product);
-  res.status(200).send(productCreated);
+  const { name, description, price } = product;
+  if (name && description && price) {
+    const productCreated = await productModel.create(product);
+    res.status(200).send(productCreated);
+  } else {
+    res.status(200).send({
+      error: "Enter all the values, both price and description, and the name",
+    });
+  }
 });
 //Find One Product
 productsRoutes.get(`/products/id/:param`, async (req, res) => {
@@ -74,16 +81,22 @@ productsRoutes.put(`/products/id/:param`, async (req, res) => {
   const { param: productId } = params;
 
   try {
-    const updateOneProduct = await productModel.updateOne(
-      { _id: productId },
-      { name, description, price }
-    );
-    if (updateOneProduct) {
-      res.status(200);
-      res.send({ productUpdated: { name, description, price } });
-    } else if (!updateOneProduct) {
-      res.status(200);
-      res.send({ notFound: `Not found product with id : ${productId}` });
+    if (name && description && price) {
+      const updateOneProduct = await productModel.updateOne(
+        { _id: productId },
+        { name, description, price }
+      );
+      if (updateOneProduct) {
+        res.status(200);
+        res.send({ productUpdated: { name, description, price } });
+      } else if (!updateOneProduct) {
+        res.status(200);
+        res.send({ notFound: `Not found product with id : ${productId}` });
+      }
+    } else {
+      res
+        .status(400)
+        .res.send("You must enter the price, description and name");
     }
   } catch (error) {
     res.status(400);
