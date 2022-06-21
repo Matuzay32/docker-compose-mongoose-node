@@ -24,7 +24,7 @@ productsRoutes.get(`/products/findProductsByName`, async (req, res) => {
   const { productName } = req.query;
   //busqueda
   const allNamesFind = await productModel.find({
-    name: { $regex: productName },
+    name: { $regex: productName, $options: "i" },
   });
 
   if (allNamesFind) {
@@ -45,6 +45,7 @@ productsRoutes.post("/products/upload", verifyTokenUser, async (req, res) => {
     });
   }
 });
+
 //Find One Product
 productsRoutes.get(`/products/id/:param`, verifyTokenUser, async (req, res) => {
   const params = req.params;
