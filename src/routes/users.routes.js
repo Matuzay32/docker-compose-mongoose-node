@@ -86,7 +86,7 @@ usersRoutes.get(`/users/oneUser`, verifyToken, async (req, res) => {
 });
 
 //Get One User for Id ADMIN
-usersRoutes.get(`/users/id/:param`, verifyToken, async (req, res) => {
+usersRoutes.get(`/users/id/:param`, async (req, res) => {
   const params = req.params;
   const { param: userId } = params;
   try {
@@ -103,7 +103,7 @@ usersRoutes.get(`/users/id/:param`, verifyToken, async (req, res) => {
 });
 
 //Delete User ADMIN
-usersRoutes.delete(`/users/id/:param`, verifyToken, async (req, res) => {
+usersRoutes.delete(`/users/id/:param`, async (req, res) => {
   const params = req.params;
   const { param: userId } = params;
 
