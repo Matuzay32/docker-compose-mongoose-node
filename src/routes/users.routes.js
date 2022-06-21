@@ -12,12 +12,13 @@ export default usersRoutes;
 //Login user
 usersRoutes.post("/users/login", async (req, res) => {
   const body = req.body;
-  const { email, password } = body;
+  const { email, password, username } = body;
   const foundUser = await userModel.findOne({ email: email });
+  console.log(foundUser);
 
   if (foundUser) {
     const validPassword = await bcrypt.compare(password, foundUser.password);
-    if (validPassword) {
+    if (validPassword && foundUser.username == username) {
       //Genero el Token con los datos del usuario que vienen desde la base de datos
       const token = jwt.sign(
         {
@@ -33,7 +34,7 @@ usersRoutes.post("/users/login", async (req, res) => {
         .status(200)
         .json({ message: "You are now authenticated", token: token });
     } else {
-      res.status(400).json({ error: "Invalid Password" });
+      res.status(400).json({ error: "Invalid Password or User" });
     }
   } else {
     res.status(401).json({ error: "User does not exist" });
@@ -41,7 +42,7 @@ usersRoutes.post("/users/login", async (req, res) => {
 });
 
 //Get all users ADMIN
-usersRoutes.get(`/users/allUsers`, verifyToken, async (req, res) => {
+usersRoutes.get(`/users/allUsers`, async (req, res) => {
   const { limit, skip, names, emails } = req.query;
 
   let allUsers = await userModel
