@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import TOKEN_SECRET from "../../config/config.js";
 
-export const verifyToken = (req, res, next) => {
+export const verifyTokenUser = (req, res, next) => {
   const token = req.header("token");
   if (!token)
     res.status(401).json({
@@ -11,11 +11,12 @@ export const verifyToken = (req, res, next) => {
     const verified = jwt.verify(token, TOKEN_SECRET.TOKEN_SECRET);
 
     const admin = verified.role.includes("ADMIN");
-    if (admin) {
+    const user = verified.role.includes("USER");
+    if (admin || user) {
       next();
     } else {
       res.status(401).json({
-        error: `Tiene que ser ADMIN para poder disponer de esta ruta`,
+        error: `Tiene que estar Registrado para poder disponer de esta ruta`,
       });
     }
   } catch (error) {

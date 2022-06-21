@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { userModel } from "../models/Users.js";
 import bcrypt from "bcryptjs";
 import TOKEN_SECRET from "../config/config.js";
-import { verifyToken } from "./middelwares/validateToken.js";
 
 const usersRoutes = Router();
 
@@ -73,7 +72,7 @@ usersRoutes.get(`/users/allUsers`, async (req, res) => {
 });
 
 //Get One User for email ADMIN
-usersRoutes.get(`/users/oneUser`, verifyToken, async (req, res) => {
+usersRoutes.get(`/users/oneUser`, async (req, res) => {
   const { email } = req.query;
   console.log(req.params);
   const oneUser = await userModel.findOne({ email: email });

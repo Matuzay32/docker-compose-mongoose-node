@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { productModel } from "../models/Product.js";
+import { verifyTokenUser } from "./middelwares/validateTokenUserCredentials.js";
 const productsRoutes = Router();
-import { verifyToken } from "./middelwares/validateToken.js";
 
 export default productsRoutes;
 //Find all products in the  database
@@ -19,7 +19,7 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
 });
 
 //Upload multiple   products
-productsRoutes.post("/products/upload", async (req, res) => {
+productsRoutes.post("/products/upload", verifyTokenUser, async (req, res) => {
   var product = req.body;
   const { name, description, price } = product;
   if (name && description && price) {
@@ -32,7 +32,7 @@ productsRoutes.post("/products/upload", async (req, res) => {
   }
 });
 //Find One Product
-productsRoutes.get(`/products/id/:param`, async (req, res) => {
+productsRoutes.get(`/products/id/:param`, verifyTokenUser, async (req, res) => {
   const params = req.params;
   const { param: productId } = params;
   try {
@@ -52,30 +52,34 @@ productsRoutes.get(`/products/id/:param`, async (req, res) => {
 });
 
 //Delete One product
-productsRoutes.delete(`/products/id/:param`, async (req, res) => {
-  const params = req.params;
-  const { param: productId } = params;
+productsRoutes.delete(
+  `/products/id/:param`,
+  verifyTokenUser,
+  async (req, res) => {
+    const params = req.params;
+    const { param: productId } = params;
 
-  try {
-    const findProductAndDelete = await productModel.findByIdAndDelete({
-      _id: productId,
-    });
-    if (findProductAndDelete) {
-      res.status(200).send({ productDeleted: findProductAndDelete });
-    } else if (!findProductAndDelete) {
+    try {
+      const findProductAndDelete = await productModel.findByIdAndDelete({
+        _id: productId,
+      });
+      if (findProductAndDelete) {
+        res.status(200).send({ productDeleted: findProductAndDelete });
+      } else if (!findProductAndDelete) {
+        res
+          .status(200)
+          .send({ notFound: `Not found product with id : ${productId}` });
+      }
+    } catch (error) {
       res
-        .status(200)
+        .status(400)
         .send({ notFound: `Not found product with id : ${productId}` });
     }
-  } catch (error) {
-    res
-      .status(400)
-      .send({ notFound: `Not found product with id : ${productId}` });
   }
-});
+);
 
 //Update One product
-productsRoutes.put(`/products/id/:param`, async (req, res) => {
+productsRoutes.put(`/products/id/:param`, verifyTokenUser, async (req, res) => {
   const params = req.params;
   const { name, description, price } = req.body;
   const { param: productId } = params;
