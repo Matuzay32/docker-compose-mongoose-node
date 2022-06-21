@@ -4,6 +4,7 @@ import { verifyTokenUser } from "./middelwares/validateTokenUserCredentials.js";
 const productsRoutes = Router();
 
 export default productsRoutes;
+
 //Find all products in the  database
 productsRoutes.get(`/products/allproducts`, async (req, res) => {
   const { limit, skip, names } = req.query;
@@ -15,6 +16,19 @@ productsRoutes.get(`/products/allproducts`, async (req, res) => {
   } else {
     res.status(200);
     res.send(resAll);
+  }
+});
+
+//Find  products by name
+productsRoutes.get(`/products/findProductsByName`, async (req, res) => {
+  const { productName } = req.query;
+  //busqueda
+  const allNamesFind = await productModel.find({
+    name: { $regex: productName },
+  });
+
+  if (allNamesFind) {
+    res.status(200).send(allNamesFind);
   }
 });
 
