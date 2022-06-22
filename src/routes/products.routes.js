@@ -24,7 +24,10 @@ productsRoutes.get(`/products/findProductsByName`, async (req, res) => {
   const { productName } = req.query;
   //busqueda
   const allNamesFind = await productModel.find({
-    name: { $regex: productName, $options: "i" },
+    $or: [
+      { name: { $regex: productName, $options: "i" } },
+      // { price: { $regex: productName, $options: "i" } },
+    ],
   });
 
   if (allNamesFind) {
