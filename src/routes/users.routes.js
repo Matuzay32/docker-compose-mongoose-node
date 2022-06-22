@@ -40,6 +40,22 @@ usersRoutes.post("/users/login", async (req, res) => {
   }
 });
 
+//Find  user by name ADMIN
+usersRoutes.get(`/users/findUsersByEmail`, async (req, res) => {
+  const { emailSearch } = req.query;
+  //busqueda
+  const allNamesFind = await userModel.find({
+    $or: [
+      { email: { $regex: emailSearch, $options: "i" } },
+      { username: { $regex: emailSearch, $options: "i" } },
+    ],
+  });
+
+  if (allNamesFind) {
+    res.status(200).send(allNamesFind);
+  }
+});
+
 //Get all users ADMIN
 usersRoutes.get(`/users/allUsers`, async (req, res) => {
   const { limit, skip, names, emails } = req.query;
