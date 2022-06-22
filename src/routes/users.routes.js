@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 import TOKEN_SECRET from "../config/config.js";
 
 const usersRoutes = Router();
-
 export default usersRoutes;
 
 //Login user
@@ -52,7 +51,11 @@ usersRoutes.get(`/users/findUsersByEmail`, async (req, res) => {
   });
 
   if (allNamesFind) {
-    res.status(200).send(allNamesFind);
+    const allUsers = allNamesFind?.map((item) => {
+      const { _id, username, email, role } = item;
+      return { _id, username, email, role };
+    });
+    res.status(200).send(allUsers);
   }
 });
 
